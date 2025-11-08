@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireConnect - Job Recruitment Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HireConnect Platform</h1>
+            <p class="tagline">Comprehensive Job Recruitment Management System</p>
+        </header>
+
+        <div class="role-selector">
+            <h2>Select Your Role</h2>
+            <div class="role-buttons">
+                <button onclick="setRole('Admin', 1)" class="role-btn admin">Admin</button>
+                <button onclick="setRole('Recruiter', 2)" class="role-btn recruiter">Recruiter</button>
+                <button onclick="setRole('Applicant', 6)" class="role-btn applicant">Applicant</button>
+                <button onclick="setRole('HRManager', 4)" class="role-btn hr">HR Manager</button>
+            </div>
+            <div id="current-role" class="current-role"></div>
+        </div>
+
+        <nav class="main-nav">
+            <button onclick="showSection('dashboard')" class="nav-btn active">Dashboard</button>
+            <button onclick="showSection('jobs')" class="nav-btn">Jobs</button>
+            <button onclick="showSection('applications')" class="nav-btn">Applications</button>
+            <button onclick="showSection('reports')" class="nav-btn">Reports</button>
+            <button onclick="showSection('demo')" class="nav-btn">Demo Features</button>
+        </nav>
+
+        <main id="main-content">
+            <section id="dashboard-section" class="content-section active">
+                <h2>Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Jobs</h3>
+                        <p id="total-jobs" class="stat-number">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Applications</h3>
+                        <p id="total-applications" class="stat-number">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Interviews</h3>
+                        <p id="total-interviews" class="stat-number">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Offers</h3>
+                        <p id="total-offers" class="stat-number">0</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-content">
+                    <h3>Job Statistics (Database View)</h3>
+                    <div id="job-statistics" class="table-container"></div>
+                </div>
+            </section>
+
+            <section id="jobs-section" class="content-section">
+                <h2>Job Listings</h2>
+                <div class="search-controls">
+                    <input type="text" id="job-search" placeholder="Search jobs (SQL Injection Protected)" class="search-input">
+                    <select id="job-category" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Education">Education</option>
+                        <option value="Retail">Retail</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Media">Media</option>
+                    </select>
+                    <button onclick="searchJobs()" class="btn btn-primary">Search</button>
+                </div>
+                <div id="jobs-list" class="items-grid"></div>
+            </section>
+
+            <section id="applications-section" class="content-section">
+                <h2>Applications</h2>
+                <div id="applications-list" class="table-container"></div>
+            </section>
+
+            <section id="reports-section" class="content-section">
+                <h2>Reports & Analytics</h2>
+                <div class="reports-nav">
+                    <button onclick="loadReport('multiple-applications')" class="report-btn">Applicants with >5 Applications</button>
+                    <button onclick="loadReport('jobs-no-applications')" class="report-btn">Jobs with No Applications</button>
+                    <button onclick="loadReport('conversion-rates')" class="report-btn">Conversion Rates by Recruiter</button>
+                    <button onclick="loadReport('pending-offers')" class="report-btn">Pending Offers >14 Days</button>
+                    <button onclick="loadReport('onboarding-status')" class="report-btn">Onboarding Status</button>
+                    <button onclick="loadReport('job-categories')" class="report-btn">Top Job Categories</button>
+                </div>
+                <div id="report-content" class="report-display"></div>
+            </section>
+
+            <section id="demo-section" class="content-section">
+                <h2>Database Features Demo</h2>
+                
+                <div class="demo-card">
+                    <h3>Indexing Strategy</h3>
+                    <p><strong>Indexes Created:</strong></p>
+                    <ul>
+                        <li>idx_applicant_id on Applications.applicant_id</li>
+                        <li>idx_job_id on Jobs.job_id</li>
+                        <li>idx_interview_date on Interviews.interview_date</li>
+                    </ul>
+                    <p>These indexes improve query performance for frequently accessed columns.</p>
+                </div>
+
+                <div class="demo-card">
+                    <h3>Transaction Demo: Offer Issuance</h3>
+                    <p>Test the transaction with rollback on invalid salary:</p>
+                    <div class="form-group">
+                        <label>Application ID:</label>
+                        <input type="number" id="demo-app-id" value="1" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Salary Offered:</label>
+                        <input type="number" id="demo-salary" value="50000" class="form-input">
+                    </div>
+                    <button onclick="testTransaction()" class="btn btn-warning">Test Transaction</button>
+                    <div id="transaction-result" class="result-box"></div>
+                </div>
+
+                <div class="demo-card">
+                    <h3>SQL Injection Prevention</h3>
+                    <p>Try searching with SQL injection attempts:</p>
+                    <code>' OR '1'='1</code> or <code>'; DROP TABLE Jobs; --</code>
+                    <p>The system uses parameterized queries to prevent SQL injection attacks.</p>
+                </div>
+
+                <div class="demo-card">
+                    <h3>Role-Based Access Control (RBAC)</h3>
+                    <ul>
+                        <li><strong>Admin:</strong> Full access to all features and reports</li>
+                        <li><strong>Recruiter:</strong> Can view jobs, schedule interviews, create offers</li>
+                        <li><strong>Applicant:</strong> Can only view own applications and profile (Privacy: Location data masked for other applicants)</li>
+                        <li><strong>HR Manager:</strong> Can view all data, manage onboarding, view reports</li>
+                    </ul>
+                </div>
+
+                <div class="demo-card">
+                    <h3>Privacy Features (GDPR Compliance)</h3>
+                    <p>Location data is masked in reports when accessed by unauthorized roles.</p>
+                    <button onclick="testPrivacy()" class="btn btn-info">Test Privacy Masking</button>
+                    <div id="privacy-result" class="result-box"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>HireConnect Platform - Database Management System Project</p>
+            <p>Features: RBAC | SQL Injection Prevention | Transactions | Indexing | Privacy Controls</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
